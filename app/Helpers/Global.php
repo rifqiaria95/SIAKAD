@@ -15,6 +15,7 @@ function ranking5Besar()
     return $siswa;
 }
 
+
 function totalSiswa()
 {
     return Siswa::count();

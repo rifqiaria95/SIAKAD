@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Siswa;
+use PDF;
 use App\Models\User;
 use App\Models\Mapel;
+use App\Models\Siswa;
+use Illuminate\Support\Str;
 use App\Exports\SiswaExport;
-use PDF;
+use App\Imports\SiswaImport;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class SiswaController extends Controller
 {
@@ -18,103 +20,156 @@ class SiswaController extends Controller
     {
         // Menampilkan Data Siswa
         $siswa = Siswa::all();
-        if($request->ajax()){
+        if ($request->ajax()) {
             return datatables()->of($siswa)
-            ->addColumn('rata2_nilai', function($data){
-                return $data->avg();
-            })
-            ->addColumn('aksi', function($data){
-                $button = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$data->id.'" data-original-title="Edit" class="edit btn btn-warning btn-sm edit-siswa"><i class="far fa-edit"></i> Edit</a>';
-                $button .= '&nbsp;&nbsp;';
-                $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> Delete</button>';     
-                return $button;
-            })
-            ->rawColumns(['aksi'])
-            ->addIndexColumn()
-            ->toJson();
+                ->addColumn('rata2_nilai', function ($data) {
+                    return $data->avg();
+                })
+                ->addColumn('aksi', function ($data) {
+                    $button = '<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group me-2" role="group" aria-label="First group">
+                            <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $data->id . '" data-original-title="Edit" class="edit btn btn-info btn-sm edit-siswa"><i class="far fa-edit"></i></a>
+                            <button type="button" name="delete" id="' . $data->id . '" class="delete btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>
+                            <a href="siswa/' . $data->id . '/profile" name="view" class="view btn btn-secondary btn-sm"><i class="far fa-eye"></i></a>
+                        </div>
+                    </div>';
+                    return $button;
+                })
+                ->rawColumns(['aksi'])
+                ->addIndexColumn()
+                ->toJson();
         }
 
         return view('siswa.index');
-
     }
-    
+
     public function store(Request $request)
     {
-        $id = $request->id;
-        $user = User::updateOrCreate([
-            [
-                'id' => $id
-            ],
-                'role' => 'siswa',
-                'name' => $request->nama_depan,
-                'email' => $request->email,
-                'email_verified_at' => now(),
-                'password' => bcrypt('rahasia'),
-                'remember_token' => Str::random(60),
-            ]);
-        
-        $siswa = Siswa::updateOrCreate(
-            [
-                'user_id'=>$user->id,
-                'id' => $id
-            ],
-            [
-                'nama_depan' => $request->nama_depan,
-                'nama_belakang' => $request->nama_belakang,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'agama' => $request->agama,
-                'alamat' => $request->alamat,
-                'avatar' => $request->avatar,
-            ]);
-
-        if($request->hasfile('avatar')) {
-            $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
-            $siswa->avatar = $request->file('avatar')->getClientOriginalName();
-            $siswa->save();
-        }
-
-        return json_encode(array(
-            "statusCode"=>200
-        ));
-    }
-
-    public function edit($id, Request $request)
-    {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'avatar' => 'mimes:jpg,png'
         ]);
 
-        // $where = array('users.id' => $id);
-        $siswa = Siswa::select(
-
-            "siswa.id", 
-            "siswa.nama_depan",
-            "siswa.nama_belakang", 
-            "siswa.jenis_kelamin", 
-            "users.email as email",
-            "siswa.agama",
-            "siswa.alamat"
-
-        )
-
-        ->join('users', 'users.id', '=', 'siswa.user_id')
-        ->where('siswa.id', $id)
-        ->first();
-        
-        if($request->hasfile('avatar')) {
-            $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
-            $siswa->avatar = $request->file('avatar')->getClientOriginalName();
-            $siswa->update();
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+            ]);
         }
+        else {
+            // Insert Table User
+            $user = new User;
+            $user->role = 'siswa';
+            $user->name = $request->nama_depan;
+            $user->email = $request->email;
+            $user->email_verified_at = now();
+            $user->password = bcrypt('rahasia');
+            $user->remember_token = Str::random(60);
+            $user->save();
 
+            // Insert Table Siswa
+            $request->request->add(['user_id' => $user->id]);
+            $siswa = Siswa::create($request->all());
+            if($siswa)
+            {
+                $siswa->update($request->all());
+
+                if ($request->hasfile('avatar')) {
+                    $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
+                    $siswa->avatar = $request->file('avatar')->getClientOriginalName();
+                }
+                
+                $siswa->save(); 
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Data Siswa Berhasil Ditambahkan'
+                ]);
+            }
+            else {
+                return response()->json([
+                    'status' => 404,
+                    'errors' => 'Data Siswa Tidak Ditemukan'
+                ]);
+            }
+        }
+    }
+
+    public function edit($id)
+    {
+        $siswa = Siswa::find($id);
         return response()->json($siswa);
     }
 
-    public function delete($id)
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'avatar' => 'mimes:jpg,png'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+            ]);
+        }
+        else {
+            $siswa = Siswa::find($id);
+            if($siswa)
+            {
+                $siswa->update($request->all());
+
+                if ($request->hasfile('avatar')) {
+                    $path = 'images/' .$siswa->avatar;
+                    if(File::exists($path))
+                    {
+                        File::delete($path);
+                    }
+
+                    $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
+                    $siswa->avatar = $request->file('avatar')->getClientOriginalName();
+                }
+
+                $siswa->save(); 
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Data Berhasil Diupdate'
+                ]);
+            }
+            else {
+                return response()->json([
+                    'status' => 404,
+                    'errors' => 'Siswa Tidak Ditemukan'
+                ]);
+            }
+        }
+    }
+
+    public function destroy($id)
     {
         $siswa = Siswa::find($id);
-        $siswa->delete();
-        return redirect('/siswa')->with('sukses', 'Data Berhasil Dihapus');
+        if($siswa)
+        {
+            $path = 'images/'. $siswa->avatar;
+            if(File::exists($path))
+            {
+                File::delete($path);
+            }
+            $siswa->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data Siswa Berhasil Dihapus'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'Data Siswa Tidak Ditemukan'
+            ]);
+        }
     }
 
     public function profile($id)
@@ -125,12 +180,11 @@ class SiswaController extends Controller
         // Menyiapkan data charts
         $categories = [];
         $data = [];
-        
-        foreach($matapelajaran as $mp) {
-            if($siswa->mapel()->wherePivot('mapel_id',$mp->id)->first()){
+
+        foreach ($matapelajaran as $mp) {
+            if ($siswa->mapel()->wherePivot('mapel_id', $mp->id)->first()) {
                 $categories[] = $mp->nama;
                 $data[] = $siswa->mapel()->wherePivot('mapel_id', $mp->id)->first()->pivot->nilai;
-
             }
         }
 
@@ -140,12 +194,12 @@ class SiswaController extends Controller
     public function addnilai(Request $request, $idsiswa)
     {
         $siswa = Siswa::find($idsiswa);
-        if($siswa->mapel()->where('mapel_id', $request->mapel)->exists()){
-            return redirect('siswa/' .$idsiswa. '/profile')->with('error', 'Mata pelajaran sudah ada!');
+        if ($siswa->mapel()->where('mapel_id', $request->mapel)->exists()) {
+            return redirect('siswa/' . $idsiswa . '/profile')->with('error', 'Mata pelajaran sudah ada!');
         }
         $siswa->mapel()->attach($request->mapel, ['nilai' => $request->nilai]);
 
-        return redirect('siswa/' .$idsiswa. '/profile')->with('sukses', 'Nilai berhasil ditambahkan!');
+        return redirect('siswa/' . $idsiswa . '/profile')->with('sukses', 'Nilai berhasil ditambahkan!');
     }
 
     public function deletenilai($idsiswa, $idmapel)
@@ -156,7 +210,7 @@ class SiswaController extends Controller
         return redirect()->back()->with('sukses', 'Nilai berhasil dihapus!');
     }
 
-    public function exportExcel() 
+    public function exportExcel()
     {
         return Excel::download(new SiswaExport, 'siswa.xlsx');
     }
@@ -164,8 +218,21 @@ class SiswaController extends Controller
     public function exportPDF()
     {
         $siswa = Siswa::all();
-        $pdf = PDF::loadview('export.exportpdf', ['siswa'=>$siswa]);
+        $pdf = PDF::loadview('export.exportpdf', ['siswa' => $siswa]);
         return $pdf->download('siswa.pdf');
     }
 
+    public function profilsaya()
+    {
+        $siswa = auth()->user()->siswa;
+        return view('siswa.profilsaya', compact(['siswa']));
+    }
+
+    public function importsiswa(Request $request)
+    {
+        Excel::import(new SiswaImport, $request->file('data_siswa'));
+        return redirect('siswa');
+
+        // dd($request->all());
+    }
 }

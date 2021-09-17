@@ -193,7 +193,7 @@
             <div class="tr-item">
                 <div class="tr-company-name">
                 <div class="tr-img tr-card-img">
-                    <img src="{{ asset('template/images/avatars/profile-image.png') }}" alt="...">
+                    <img src="{{ asset('template/images/avatars/profile-image.jpg') }}" alt="...">
                 </div>
                 <div class="tr-text">
                     <h4 class="text-white">John Doe</h4>
@@ -209,7 +209,7 @@
             <div class="tr-item">
                 <div class="tr-company-name">
                 <div class="tr-img tr-card-img">
-                    <img src="{{ asset('template/images/avatars/profile-image.png') }}" alt="...">
+                    <img src="{{ asset('template/images/avatars/profile-image.jpg') }}" alt="...">
                 </div>
                 <div class="tr-text">
                     <h4 class="text-white">Ann Doe</h4>
@@ -225,7 +225,7 @@
             <div class="tr-item">
                 <div class="tr-company-name">
                 <div class="tr-img tr-card-img">
-                    <img src="{{ asset('template/images/avatars/profile-image.png') }}" alt="...">
+                    <img src="{{ asset('template/images/avatars/profile-image.jpg') }}" alt="...">
                 </div>
                 <div class="tr-text">
                     <h4 class="text-white">Lisa Doe</h4>
@@ -241,7 +241,7 @@
             <div class="tr-item">
                 <div class="tr-company-name">
                 <div class="tr-img tr-card-img">
-                    <img src="{{ asset('template/images/avatars/profile-image.png') }}" alt="...">
+                    <img src="{{ asset('template/images/avatars/profile-image.jpg') }}" alt="...">
                 </div>
                 <div class="tr-text">
                     <h4 class="text-white">John Doe</h4>
@@ -257,7 +257,7 @@
             <div class="tr-item">
                 <div class="tr-company-name">
                 <div class="tr-img tr-card-img">
-                    <img src="{{ asset('template/images/avatars/profile-image.png') }}" alt="...">
+                    <img src="{{ asset('template/images/avatars/profile-image.jpg') }}" alt="...">
                 </div>
                 <div class="tr-text">
                     <h4 class="text-white">Ann Doe</h4>
