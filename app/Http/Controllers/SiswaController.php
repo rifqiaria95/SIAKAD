@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use PDF;
 use App\Models\User;
+use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Siswa;
+use App\Models\Jurusan;
 use Illuminate\Support\Str;
 use App\Exports\SiswaExport;
 use App\Imports\SiswaImport;
@@ -19,9 +21,18 @@ class SiswaController extends Controller
     public function index(Request $request)
     {
         // Menampilkan Data Siswa
+        $kelas = Kelas::all();
+        $jurusan = Jurusan::all();
         $siswa = Siswa::all();
+        // dd($kelas);
         if ($request->ajax()) {
             return datatables()->of($siswa)
+                ->addColumn('kelas', function(Siswa $siswa) {
+                    return $siswa->kelas->nama_kelas;
+                })
+                ->addColumn('jurusan', function(Siswa $siswa) {
+                    return $siswa->jurusan->nama_jurusan;
+                })
                 ->addColumn('rata2_nilai', function ($data) {
                     return $data->avg();
                 })
@@ -35,12 +46,12 @@ class SiswaController extends Controller
                     </div>';
                     return $button;
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['kelas', 'aksi'])
                 ->addIndexColumn()
                 ->toJson();
         }
 
-        return view('siswa.index');
+        return view('siswa.index', compact(['siswa', 'kelas', 'jurusan']));
     }
 
     public function store(Request $request)
@@ -59,7 +70,7 @@ class SiswaController extends Controller
         else {
             // Insert Table User
             $user = new User;
-            $user->role = 'siswa';
+            $user->role = 'Siswa';
             $user->name = $request->nama_depan;
             $user->email = $request->email;
             $user->email_verified_at = now();
@@ -72,13 +83,10 @@ class SiswaController extends Controller
             $siswa = Siswa::create($request->all());
             if($siswa)
             {
-                $siswa->update($request->all());
-
                 if ($request->hasfile('avatar')) {
                     $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
                     $siswa->avatar = $request->file('avatar')->getClientOriginalName();
                 }
-                
                 $siswa->save(); 
 
                 return response()->json([
@@ -174,6 +182,8 @@ class SiswaController extends Controller
 
     public function profile($id)
     {
+        $kelas = Kelas::all();
+        $jurusan = Jurusan::all();
         $siswa = Siswa::find($id);
         $matapelajaran = Mapel::all();
 
@@ -188,7 +198,7 @@ class SiswaController extends Controller
             }
         }
 
-        return view('siswa.profile', ['siswa' => $siswa, 'matapelajaran' => $matapelajaran, 'categories' => $categories, 'data' => $data]);
+        return view('siswa.profile', compact(['kelas', 'jurusan', 'siswa', 'matapelajaran', 'categories', 'data',]));
     }
 
     public function addnilai(Request $request, $idsiswa)
@@ -230,9 +240,8 @@ class SiswaController extends Controller
 
     public function importsiswa(Request $request)
     {
+        // dd($request->all());
         Excel::import(new SiswaImport, $request->file('data_siswa'));
         return redirect('siswa');
-
-        // dd($request->all());
     }
 }

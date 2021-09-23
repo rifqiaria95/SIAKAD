@@ -12,12 +12,19 @@ class Siswa extends Model
     protected $table = "siswa";
     
     protected $fillable = [
-        'user_id',
+        'nisn',
         'nama_depan',
         'nama_belakang',
+        'tempat_lahir',
+        'tanggal_lahir',
         'jenis_kelamin',
+        'nama_ibu',
+        'nama_ayah',
         'agama',
         'alamat',
+        'user_id',
+        'kelas_id',
+        'jurusan_id',
         'avatar'
     ];
 
@@ -35,6 +42,16 @@ class Siswa extends Model
         return $this->belongsToMany(Mapel::class)->withPivot(['nilai']);
     }
 
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -49,6 +66,7 @@ class Siswa extends Model
             $total += $mapel->pivot->nilai;
             $hitung++;
         }
+        
 
         return $hitung == 0 ? 0 : round($total / $hitung);
     }

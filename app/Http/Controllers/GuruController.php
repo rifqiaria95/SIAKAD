@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class GuruController extends Controller
@@ -46,12 +49,21 @@ class GuruController extends Controller
             ]);
         }
         else {
+             // Insert Table User
+             $user = new User;
+             $user->role = 'Guru';
+             $user->name = $request->nama_guru;
+             $user->email = $request->email;
+             $user->email_verified_at = now();
+             $user->password = bcrypt('rahasia');
+             $user->remember_token = Str::random(60);
+             $user->save();
+
             // Insert Table guru
+            $request->request->add(['user_id' => $user->id]);
             $guru = Guru::create($request->all());
             if($guru)
             {
-                $guru->update($request->all());
-
                 if ($request->hasfile('avatar')) {
                     $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
                     $guru->avatar = $request->file('avatar')->getClientOriginalName();
@@ -70,6 +82,84 @@ class GuruController extends Controller
                     'errors' => 'Data guru Tidak Ditemukan'
                 ]);
             }
+        }
+    }
+
+    public function edit($id)
+    {
+        $guru = Guru::find($id);
+        return response()->json($guru);
+    }
+
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'avatar' => 'mimes:jpg,png'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->messages()
+            ]);
+        }
+        else {
+            $guru = Guru::find($id);
+            if($guru)
+            {
+                $guru->update($request->all());
+
+                if ($request->hasfile('avatar')) {
+                    $path = 'images/' .$guru->avatar;
+                    if(File::exists($path))
+                    {
+                        File::delete($path);
+                    }
+
+                    $request->file('avatar')->move('images/', $request->file('avatar')->getClientOriginalName());
+                    $guru->avatar = $request->file('avatar')->getClientOriginalName();
+                }
+
+                $guru->save(); 
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Data Berhasil Diupdate'
+                ]);
+            }
+            else {
+                return response()->json([
+                    'status' => 404,
+                    'errors' => 'guru Tidak Ditemukan'
+                ]);
+            }
+        }
+    }
+
+    public function destroy($id)
+    {
+        $guru = Guru::find($id);
+        $guru->kelas()->delete();
+        if($guru)
+        {
+            $path = 'images/'. $guru->avatar;
+            if(File::exists($path))
+            {
+                File::delete($path);
+            }
+            $guru->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data guru Berhasil Dihapus'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 404,
+                'errors' => 'Data guru Tidak Ditemukan'
+            ]);
         }
     }
 

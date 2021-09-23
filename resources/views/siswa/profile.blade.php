@@ -26,56 +26,84 @@
                         <h5 class="card-title">Biodata Siswa</h5>
                         <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, corrupti.</p>
                         <ul class="list-unstyled profile-about-list">
-                            <li><i class="far fa-user m-r-xxs"></i><span>Nama Lengkap <a href="#">{{ $siswa->nama_depan }} {{ $siswa->nama_belakang }}</a></span></li>
-                            <li><i class="fas fa-venus-mars m-r-xxs"></i><span>Jenis Kelamin: <a href="">{{ $siswa->jenis_kelamin }}</a></span></li>
-                            <li><i class="fas fa-pray m-r-xxs"></i><span>Agama: <a href="#">{{ $siswa->agama }}</a></span></li>
-                            <li><i class="far fa-address-book m-r-xxs"></i><span>Alamat: <a href="#">{{ $siswa->alamat }}</a></span></li>
-                            <li><i class="fas fa-book m-r-xxs"></i><span>Mata Pelajaran: <a href="#">{{ $siswa->mapel->count() }}</a></span></li>
-                            <li><i class="far fa-building m-r-xxs"></i><span>Rata-Rata Nilai <a href="#">{{ $siswa->avg() }}</a></span></li>
+                            <li><i class="fas fa-list-ol m-r-xxs"></i><span>Nomor Induk Siswa: <a href="javascript:void(0)">{{ $siswa->nisn}}</a></span></li>
+                            <li><i class="far fa-user m-r-xxs"></i><span>Nama Lengkap: <a href="javascript:void(0)">{{ $siswa->nama_depan }} {{ $siswa->nama_belakang }}</a></span></li>
+                            <li><i class="fas fa-city m-r-xxs"></i><span>Tempat Lahir: <a href="javascript:void(0)">{{ $siswa->tempat_lahir }}</a></span></li>
+                            <li><i class="fas fa-calendar-alt m-r-xxs"></i><span>Tanggal Lahir: <a href="javascript:void(0)">{{ $siswa->tanggal_lahir }}</a></span></li>
+                            <li><i class="fas fa-venus-mars m-r-xxs"></i><span>Jenis Kelamin: <a href=javascript:void(0)">{{ $siswa->jenis_kelamin }}</a></span></li>
+                            <li><i class="fas fa-male m-r-xxs"></i><span>Nama Ayah: <a href=javascript:void(0)">{{ $siswa->nama_ayah }}</a></span></li>
+                            <li><i class="fas fa-female m-r-xxs"></i><span>Nama Ibu: <a href=javascript:void(0)">{{ $siswa->nama_ibu }}</a></span></li>
+                            <li><i class="fas fa-pray m-r-xxs"></i><span>Agama: <a href="javascript:void(0)">{{ $siswa->agama }}</a></span></li>
+                            <li><i class="far fa-address-book m-r-xxs"></i><span>Alamat: <a href="javascript:void(0)">{{ $siswa->alamat }}</a></span></li>
+                            <li><i class="far fa-building m-r-xxs"></i><span>Kelas: <a href="javascript:void(0)">{{ $siswa->kelas->nama_kelas }}</a></span></li>
+                            <li><i class="fas fa-desktop m-r-xxs"></i><span>Jurusan: <a href="javascript:void(0)">{{ $siswa->jurusan->nama_jurusan }}</a></span></li>
+                            <li><i class="fas fa-book m-r-xxs"></i><span>Mata Pelajaran: <a href="javascript:void(0)">{{ $siswa->mapel->count() }}</a></span></li>
+                            <li><i class="far fa-edit m-r-xxs"></i><span>Rata-Rata Nilai: <a href="javascript:void(0)">{{ $siswa->avg() }}</a></span></li>
                             <li><a href="javascript:void(0)" data-toggle="tooltip"  data-id="{{ $siswa->id }}" data-original-title="Edit" class="edit btn btn-secondary btn-sm m-t-md edit-siswa">Edit Data Siswa</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
+                <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Kelas 10</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Kelas 11</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Kelas 12</a>
+                    </li>
+                </ul>
                 <div class="card card-bg">
                     <div class="card-body">
-                        <h5 class="card-title">Daftar Mata Pelajaran</h5>
-                        <button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#tambahNilai">Tambah Nilai</button>
-                        @if(session('sukses'))
-                            <div class="alert alert-success" role="alert">
-                            {{ session('sukses') }}
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                <h5 class="mb-5">Daftar Nilai Siswa</h5>
+                                <button type="button" class="btn btn-primary mb-5" id="btn_tambah" data-bs-toggle="modal" data-bs-target="#tambahNilai">Tambah Nilai</button>
+                                @if(session('sukses'))
+                                    <div class="alert alert-success" role="alert">
+                                    {{ session('sukses') }}
+                                    </div>
+                                @endif
+                                @if(session('error'))
+                                    <div class="alert alert-danger" role="alert">
+                                    {{ session('error') }}
+                                    </div>
+                                @endif
+                                <table id="zero-conf" class="display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Kode</th>
+                                            <th>Nama Mata Pelajaran</th>
+                                            <th>Semester</th>
+                                            <th>Nilai</th>
+                                            <th>Guru</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($siswa->mapel as $mapel)
+                                        <tr>
+                                            <td>{{ $mapel->kode }}</td>
+                                            <td>{{ $mapel->nama }}</td>
+                                            <td>{{ $mapel->semester }}</td>
+                                            <td>{{ $mapel->pivot->nilai }}</td>
+                                            <td><a href="/guru/{{$mapel->guru_id}}/profile">{{ $mapel->guru->nama_guru }}</a></td>
+                                            <td><a href="{{$mapel->id}}/deletenilai"><i class="far fa-trash-alt"></i></a></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger" role="alert">
-                            {{ session('error') }}
+                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                Placeholder content for the tab panel. This one relates to the home tab. Takes you miles high, so high, 'cause she’s got that one international smile. There's a stranger in my bed, there's a pounding in my head. Oh, no. In another life I would make you stay. ‘Cause I, I’m capable of anything. Suiting up for my crowning battle. Used to steal your parents' liquor and climb to the roof. Tone, tan fit and ready, turn it up cause its gettin' heavy. Her love is like a drug. I guess that I forgot I had a choice.
                             </div>
-                        @endif
-                        <table id="zero-conf" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama Mata Pelajaran</th>
-                                    <th>Semester</th>
-                                    <th>Nilai</th>
-                                    <th>Guru</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($siswa->mapel as $mapel)
-                                <tr>
-                                    <td>{{ $mapel->kode }}</td>
-                                    <td>{{ $mapel->nama }}</td>
-                                    <td>{{ $mapel->semester }}</td>
-                                    <td>{{ $mapel->pivot->nilai }}</td>
-                                    <td><a href="/guru/{{$mapel->guru_id}}/profile">{{ $mapel->guru->nama_guru }}</a></td>
-                                    <td><a href="{{$mapel->id}}/deletenilai" class="btn btn-danger btn-sm mr-1 mb-1">Hapus</a></td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                Placeholder content for the tab panel. This one relates to the home tab. Takes you miles high, so high, 'cause she’s got that one international smile. There's a stranger in my bed, there's a pounding in my head. Oh, no. In another life I would make you stay. ‘Cause I, I’m capable of anything. Suiting up for my crowning battle. Used to steal your parents' liquor and climb to the roof. Tone, tan fit and ready, turn it up cause its gettin' heavy. Her love is like a drug. I guess that I forgot I had a choice.
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,7 +120,7 @@
     </div>
 
     <!-- Modal Tambah Nilai -->
-    <div class="modal fade" id="tambahNilai" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="tambahNilai" style="overflow:hidden;" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -106,7 +134,8 @@
                         <div class="row g-3">
                             <div class="form-floating" {{ $errors->has('mapel') ? 'has-error' : '' }}>
                                 <fieldset class="form-group">
-                                    <select class="form-control" name="mapel" required>
+                                    <select class="form-control" name="mapel" id="selectmapel" tabindex="-1" style="display: none; width: 100%" required>
+                                        <option selected disabled>-- Pilih Mata Pelajaran --</option>
                                         @foreach ($matapelajaran as $mp)
                                             <option value="{{ $mp->id }}">{{ $mp->nama }}</option>
                                         @endforeach
@@ -126,8 +155,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-success tambah_data">Simpan</button>
+                        <button type="submit" class="btn btn-primary tambah_data">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -136,8 +164,8 @@
     <!-- End Modal Tambah Nilai -->
 
     <!-- Modal Edit Siswa -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal-judul">Edit Data Siswa</h5>
@@ -149,26 +177,64 @@
                         <input type="hidden" name="id" id="id">
                         <ul class="alert alert-warning d-none" id="modalJudulEdit"></ul>
                         <div class="row g-3">
-                            <div class="mb-3 col-sm-6">
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">NISN</label>
+                                <input type="number" id="nisn" name="nisn" class="form-control" value="" required>
+                            </div>
+                            <div class="mb-3 col-md-4">
                                 <label for="nama_depan" class="form-label">Nama Depan</label>
-                                <input type="text" name="nama_depan" class="nama_depan form-control" id="nama_depan" value="" required>
+                                <input type="text" name="nama_depan" class="form-control" id="nama_depan" value="" required>
                             </div>
-                            <div class="mb-3 col-sm-6">
+                            <div class="mb-3 col-md-4">
                                 <label for="exampleInputPassword1" class="form-label">Nama Belakang</label>
-                                <input type="text" name="nama_belakang" class="nama_belakang form-control" id="nama_belakang" value="">
+                                <input type="text" name="nama_belakang" class="form-control" id="nama_belakang" value="">
                             </div>
-                            <div class="form-floating">
+                            <div class="mb-3 col-md-4">
+                                <label for="exampleInputPassword1" class="form-label">Tempat Lahir</label>
+                                <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" value="">
+                            </div>
+                            <div class="mb-3 col-md-4">
+                                <label for="exampleInputPassword1" class="form-label">Tanggal Lahir</label>
+                                <input type="text" name="tanggal_lahir" class="form-control" id="tanggal_lahir" value="">
+                            </div>
+                            <div class="form-floating col-md-4">
                                 <fieldset class="form-group">
-                                    <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" required>
-                                        <option value="">Pilih Jenis Kelamin</option>
-                                        <option value="L">Laki-Laki</option>
-                                        <option value="P">Perempuan</option>
+                                    <label class="form-label">Jenis Kelamin</label>
+                                    <select class="js-states form-control" name="jenis_kelamin" id="jenis_kelamin" tabindex="-1" style="display: none; width: 100%">
+                                        <optgroup label="Pilih Jenis Kelamin">
+                                            <option value="L">Laki-Laki</option>
+                                            <option value="P">Perempuan</option>
+                                        </optgroup>
                                     </select>
                                 </fieldset>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-3 col-md-4">
+                                <label for="exampleInputPassword1" class="form-label">Nama Ibu</label>
+                                <input type="text" name="nama_ibu" class="form-control" id="nama_ibu" value="" required>
+                            </div>
+                            <div class="mb-3 col-md-4">
+                                <label for="exampleInputPassword1" class="form-label">Nama Ayah</label>
+                                <input type="text" name="nama_ayah" class="form-control" id="nama_ayah" value="" required>
+                            </div>
+                            <div class="mb-3 col-md-4">
                                 <label for="exampleInputPassword1" class="form-label">Agama</label>
-                                <input type="text" name="agama" class="agama form-control" id="agama" value="" required>
+                                <input type="text" name="agama" class="form-control" id="agama" value="" required>
+                            </div>
+                            <div class="form-floating col-md-6">
+                                <select class="js-states form-control" name="kelas_id" id="kelas_id" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $kl)
+                                    <option value="{{ $kl->id }}">{{ $kl->nama_kelas }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-floating col-md-6">
+                                <select class="js-states form-control" name="jurusan_id" id="jurusan_id" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $jr)
+                                    <option value="{{ $jr->id }}">{{ $jr->nama_jurusan }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label for="exampleInputPassword1" class="form-label">Alamat</label>
@@ -181,7 +247,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Simpan
                         </button>
                     </div>
@@ -197,6 +262,10 @@
 
     <script>
         $(document).ready(function() {
+            $('#myTab a').on('click', function (event) {
+                event.preventDefault()
+                $(this).tab('show')
+            })
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -248,6 +317,13 @@
             }
         };
 
+        $('#btn_tambah').click(function() {
+            $('#tambahNilai').modal('show');
+            $('#selectmapel').select2({
+                dropdownParent: $('#tambahNilai')
+            });
+        });
+
         var chart = new ApexCharts(document.querySelector("#chartNilai"), options);
         chart.render();
 
@@ -255,6 +331,15 @@
             e.preventDefault();
             var id = $(this).data('id');
             $('#editModal').modal('show');
+            $('#jenis_kelamin').select2({
+                dropdownParent: $('#editModal')
+            });
+            $('#kelas_id').select2({
+                dropdownParent: $('#editModal')
+            });
+            $('#jurusan_id').select2({
+                dropdownParent: $('#editModal')
+            });
             $.ajax({
                 type: "GET",
                 url: "/siswa/edit/" + id,
@@ -266,12 +351,19 @@
                         $('#editModal').modal('hide');
                     } else {
                         $('#id').val(id);
+                        $('#nisn').val(response.nisn);
                         $('#nama_depan').val(response.nama_depan);
                         $('#nama_belakang').val(response.nama_belakang);
+                        $('#tempat_lahir').val(response.tempat_lahir);
+                        $('#tanggal_lahir').val(response.tanggal_lahir);
                         $('#jenis_kelamin').val(response.jenis_kelamin);
+                        $('#nama_ibu').val(response.nama_ibu);
+                        $('#nama_ayah').val(response.nama_ayah);
                         $('#agama').val(response.agama);
                         $('#alamat').val(response.alamat);
                         $('#avatar').val();
+                        $('#kelas_id').val(response.kelas_id);
+                        $('#jurusan_id').val(response.jurusan_id);
                     }
                 }
             });
@@ -321,6 +413,14 @@
                 }
             });
 
+        });
+
+        $(document).ready(function () {
+            $('#myTab a').on('click', function (event) {
+                event.preventDefault()
+                $(this).tab('show')
+            })
+            $('#myTab li:first-child a').tab('show') // Select first ta
         });
     </script>
 @endsection

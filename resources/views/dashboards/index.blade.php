@@ -62,7 +62,7 @@
                             <tr>
                                 <th>Ranking</th>
                                 <th>Nama</th>
-                                <th>Nilai</th>
+                                <th>Nilai Rata-Rata</th>
                             </tr>
                         </thead>
                         <tbody>

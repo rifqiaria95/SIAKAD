@@ -135,10 +135,11 @@ integrity="sha256-sPB0F50YUDK0otDnsfNHawYmA5M0pjjUf4TvRJkGFrI=" crossorigin="ano
         <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('template/plugins/perfectscroll/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('template/plugins/pace/pace.min.js') }}"></script>
-        <script src="{{ asset('template/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="{{ asset('template/js/main.min.js') }}"></script>
+        <script src="{{ asset('template/js/pages/select2.js') }}"></script>
+        <script src="{{ asset('template/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
         <script src="{{ asset('template/js/pages/dashboard.js') }}"></script>
-        <script src="{{ asset('template/plugins/pace/pace.min.js') }}"></script>
         <script src="{{ asset('template/plugins/DataTables/datatables.min.js') }}"></script>
         <script src="{{ asset('template/js/pages/datatables.js') }}"></script>
         <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>

@@ -6,7 +6,7 @@
                 <div class="profile-cover"></div>
                 <div class="profile-header">
                     <div class="profile-img">
-                        <img src="" alt="Avatar">
+                        <img src="{{ $guru->getAvatar() }}" alt="Avatar">
                     </div>
                     <div class="profile-name">
                         <h3>{{ $guru->nama }}</h3>
@@ -50,7 +50,6 @@
                                     <th>Kode</th>
                                     <th>Nama Mata Pelajaran</th>
                                     <th>Semester</th>
-                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>

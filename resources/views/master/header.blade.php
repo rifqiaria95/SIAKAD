@@ -6,13 +6,22 @@
                 <li class="{{ Request::is('dashboard')?'active-page open':'' }}">
                     <a href="/dashboard" class="dashboard"><i data-feather="activity"></i>Dashboard</a>
                 </li>
-                @if(auth()->user()->role == 'admin')
-                <li class="{{ Request::is('siswa', 'guru')?'active-page open':'' }}">
+                @if(auth()->user()->role == 'Admin')
+                <li class="{{ Request::is('user')?'active-page open':'' }}">
+                  <a href="#"><i data-feather="user"></i>User<i class="fas fa-chevron-right dropdown-icon"></i></a>
+                  <ul class="">
+                    <li ><a href="/user" class="{{ Request::is('user')?'active':'' }}"><i class="far fa-circle"></i>Semua User</a></li>
+                  </ul>
+                </li>
+                <li class="{{ Request::is('siswa', 'guru', 'mapel', 'kelas', 'jurusan')?'active-page open':'' }}">
                   <a href="#"><i data-feather="box"></i>Data<i class="fas fa-chevron-right dropdown-icon"></i></a>
                   <ul class="">
                     <li ><a href="/siswa" class="{{ Request::is('siswa')?'active':'' }}"><i class="far fa-circle"></i>Siswa</a></li>
                     <li ><a href="/guru" class="{{ Request::is('guru')?'active':'' }}"><i class="far fa-circle"></i>Guru</a></li>
-                    <li ><a href="#" class="{{ Request::is('mapel')?'active':'' }}"><i class="far fa-circle"></i>Mata Pelajaran</a></li>
+                    <li ><a href="/kelas" class="{{ Request::is('kelas')?'active':'' }}"><i class="far fa-circle"></i>Kelas</a></li>
+                    <li ><a href="/jurusan" class="{{ Request::is('jurusan')?'active':'' }}"><i class="far fa-circle"></i>Jurusan</a></li>
+                    <li ><a href="/mapel" class="{{ Request::is('mapel')?'active':'' }}"><i class="far fa-circle"></i>Mata Pelajaran</a></li>
+                    <li ><a href="#" class="{{ Request::is('jadwal')?'active':'' }}"><i class="far fa-circle"></i>Jadwal</a></li>
                   </ul>
                 </li>
                 <li class="{{ Request::is('absenguru', 'absensiswa')?'active-page open':'' }}">
@@ -22,6 +31,7 @@
                     <li><a href="#" class="{{ Request::is('absensiswa')?'active':'' }}"><i class="far fa-circle"></i>Absensi Siswa</a></li>
                   </ul>
                 </li>
+                <li class="{{ Request::is('rapor')?'active-page open':'' }}"><a href="#"><i data-feather="book"></i>Rapor Siswa</a></li>
                 <li class="{{ Request::is('posts')?'active-page open':'' }}"><a href="/posts"><i data-feather="edit-2"></i>News</a></li>
                 @endif
             </ul>

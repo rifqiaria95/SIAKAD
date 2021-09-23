@@ -15,11 +15,11 @@
                     <table id="table-siswa" class="display" style="width:100%">
                         <thead>
                             <tr>
+                                <th>NISN</th>
                                 <th>Nama Depan</th>
                                 <th>Nama Belakang</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Agama</th>
-                                <th>Alamat</th>
+                                <th>Kelas</th>
+                                <th>Jurusan</th>
                                 <th>Nilai Rata-Rata</th>
                                 <th>Aksi</th>
                             </tr>
@@ -32,48 +32,91 @@
 </div>
 
 <!-- Modal Tambah Siswa -->
-<div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-judul">Tambah Data Siswa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formSiswa" method="POST" class="form-horizontal" enctype="multipart/form-data">
+            <form id="formSiswa" class="form-horizontal" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <input type="hidden" name="user_id" id="user_id">
                     <ul id="save_errorList"></ul>
                     <div class="row g-3">
-                        <div class="mb-3 col-sm-6">
-                            <label class="form-label">Nama Depan</label>
-                            <input type="text" name="nama_depan" class="nama_depan form-control">
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">NISN</label>
+                            <input type="number" name="nisn" class="nisn form-control" required>
                         </div>
-                        <div class="mb-3 col-sm-6">
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">Nama Depan</label>
+                            <input type="text" name="nama_depan" class="nama_depan form-control" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
                             <label class="form-label">Nama Belakang</label>
                             <input type="text" name="nama_belakang" class="nama_belakang form-control">
                         </div>
-                        <div class="form-floating">
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" class="tempat_lahir form-control" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">Tanggal Lahir</label>
+                            <input type="text" name="tanggal_lahir" class="tanggal_lahir form-control" required>
+                        </div>
+                        <div class="form-floating col-md-4">
                             <fieldset class="form-group">
-                                <select class="form-control" name="jenis_kelamin">
+                                <label class="form-label">Jenis Kelamin</label>
+                                <select class="form-control" name="jenis_kelamin" id="selectJk" tabindex="-1" style="display: none; width: 100%" required>
                                     <option value="">Pilih Jenis Kelamin</option>
                                     <option value="L">Laki-Laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="email form-control">
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Nama Ibu</label>
+                            <input type="text" name="nama_ibu" class="nama_ibu form-control" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Nama Ayah</label>
+                            <input type="text" name="nama_ayah" class="nama_ayah form-control" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
                             <label for="exampleInputPassword1" class="form-label">Agama</label>
-                            <input type="text" name="agama" class="agama form-control">
+                            <input type="text" name="agama" class="agama form-control" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="email form-control" required>
+                        </div>
+                        <div class="form-floating col-md-4">
+                            <fieldset class="form-group">
+                                <label class="form-label">Kelas</label>
+                                <select class="js-states form-control" name="kelas_id" id="optionKelas" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $kl)
+                                    <option value="{{ $kl->id }}">{{ $kl->nama_kelas }}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
+                        </div>
+                        <div class="form-floating col-md-4">
+                            <fieldset class="form-group">
+                                <label class="form-label">Jurusan</label>
+                                <select class="js-states form-control" name="jurusan_id" id="optionJurusan" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $jr)
+                                    <option value="{{ $jr->id }}">{{ $jr->nama_jurusan }}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Alamat</label>
-                            <textarea class="alamat form-control" name="alamat" aria-label="With textarea"></textarea>
+                            <textarea class="alamat form-control" name="alamat" aria-label="With textarea" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Avatar</label>
@@ -82,7 +125,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary btn-block" id="btn-simpan" value="create">Simpan
                     </button>
                 </div>
@@ -93,8 +135,8 @@
 <!-- End Modal Tambah Siswa -->
 
 <!-- Modal Edit Siswa -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-judul">Edit Data Siswa</h5>
@@ -106,26 +148,64 @@
                     <input type="hidden" name="id" id="id">
                     <ul class="alert alert-warning d-none" id="modalJudulEdit"></ul>
                     <div class="row g-3">
-                        <div class="mb-3 col-sm-6">
+                        <div class="mb-3 col-md-4">
+                            <label class="form-label">NISN</label>
+                            <input type="number" id="nisn" name="nisn" class="form-control" value="" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
                             <label for="nama_depan" class="form-label">Nama Depan</label>
-                            <input type="text" name="nama_depan" class="nama_depan form-control" id="nama_depan" value="" required>
+                            <input type="text" name="nama_depan" class="form-control" id="nama_depan" value="" required>
                         </div>
-                        <div class="mb-3 col-sm-6">
+                        <div class="mb-3 col-md-4">
                             <label for="exampleInputPassword1" class="form-label">Nama Belakang</label>
-                            <input type="text" name="nama_belakang" class="nama_belakang form-control" id="nama_belakang" value="">
+                            <input type="text" name="nama_belakang" class="form-control" id="nama_belakang" value="">
                         </div>
-                        <div class="form-floating">
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" value="">
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Tanggal Lahir</label>
+                            <input type="text" name="tanggal_lahir" class="form-control" id="tanggal_lahir" value="">
+                        </div>
+                        <div class="form-floating col-md-4">
                             <fieldset class="form-group">
-                                <select class="form-control" name="jenis_kelamin" id="jenis_kelamin" required>
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="L">Laki-Laki</option>
-                                    <option value="P">Perempuan</option>
+                                <label class="form-label">Jenis Kelamin</label>
+                                <select class="js-states form-control" name="jenis_kelamin" id="jenis_kelamin" tabindex="-1" style="display: none; width: 100%">
+                                    <optgroup label="Pilih Jenis Kelamin">
+                                        <option value="L">Laki-Laki</option>
+                                        <option value="P">Perempuan</option>
+                                    </optgroup>
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Nama Ibu</label>
+                            <input type="text" name="nama_ibu" class="form-control" id="nama_ibu" value="" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <label for="exampleInputPassword1" class="form-label">Nama Ayah</label>
+                            <input type="text" name="nama_ayah" class="form-control" id="nama_ayah" value="" required>
+                        </div>
+                        <div class="mb-3 col-md-4">
                             <label for="exampleInputPassword1" class="form-label">Agama</label>
-                            <input type="text" name="agama" class="agama form-control" id="agama" value="" required>
+                            <input type="text" name="agama" class="form-control" id="agama" value="" required>
+                        </div>
+                        <div class="form-floating col-md-6">
+                            <select class="js-states form-control" name="kelas_id" id="kelas_id" tabindex="-1" style="display: none; width: 100%">
+                                <option selected disabled>-- Pilih Kelas --</option>
+                                @foreach ($kelas as $kl)
+                                <option value="{{ $kl->id }}">{{ $kl->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-floating col-md-6">
+                            <select class="js-states form-control" name="jurusan_id" id="jurusan_id" tabindex="-1" style="display: none; width: 100%">
+                                <option selected disabled>-- Pilih Jurusan --</option>
+                                @foreach ($jurusan as $jr)
+                                <option value="{{ $jr->id }}">{{ $jr->nama_jurusan }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Alamat</label>
@@ -138,7 +218,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Simpan
                     </button>
                 </div>
@@ -213,6 +292,10 @@
                 type: 'GET'
             },
             columns: [{
+                    data: 'nisn',
+                    name: 'nisn'
+                },
+                {
                     data: 'nama_depan',
                     name: 'nama_depan'
                 },
@@ -221,16 +304,12 @@
                     name: 'nama_belakang'
                 },
                 {
-                    data: 'jenis_kelamin',
-                    name: 'jenis_kelamin'
+                    data: 'kelas',
+                    name: 'kelas'
                 },
                 {
-                    data: 'agama',
-                    name: 'agama'
-                },
-                {
-                    data: 'alamat',
-                    name: 'alamat'
+                    data: 'jurusan',
+                    name: 'jurusan'
                 },
                 {
                     data: 'rata2_nilai',
@@ -253,12 +332,30 @@
         $('#formSiswa').trigger("reset");
         $('#modal-judul').html("Tambah Siswa");
         $('#tambahModal').modal('show');
+        $('#selectJk').select2({
+            dropdownParent: $('#tambahModal')
+        });
+        $('#optionKelas').select2({
+            dropdownParent: $('#tambahModal')
+        });
+        $('#optionJurusan').select2({
+            dropdownParent: $('#tambahModal')
+        });
     });
 
     $(document).on('click', '.edit-siswa', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
         $('#editModal').modal('show');
+        $('#jenis_kelamin').select2({
+            dropdownParent: $('#editModal')
+        });
+        $('#kelas_id').select2({
+            dropdownParent: $('#editModal')
+        });
+        $('#jurusan_id').select2({
+            dropdownParent: $('#editModal')
+        });
         $.ajax({
             type: "GET",
             url: "/siswa/edit/" + id,
@@ -270,12 +367,19 @@
                     $('#editModal').modal('hide');
                 } else {
                     $('#id').val(id);
+                    $('#nisn').val(response.nisn);
                     $('#nama_depan').val(response.nama_depan);
                     $('#nama_belakang').val(response.nama_belakang);
+                    $('#tempat_lahir').val(response.tempat_lahir);
+                    $('#tanggal_lahir').val(response.tanggal_lahir);
                     $('#jenis_kelamin').val(response.jenis_kelamin);
+                    $('#nama_ibu').val(response.nama_ibu);
+                    $('#nama_ayah').val(response.nama_ayah);
                     $('#agama').val(response.agama);
                     $('#alamat').val(response.alamat);
                     $('#avatar').val();
+                    $('#kelas_id').val(response.kelas_id);
+                    $('#jurusan_id').val(response.jurusan_id);
                 }
             }
         });
@@ -313,10 +417,9 @@
                         } 
                         else if(response.status == 200)
                         {
-                            $('#modalJudulEdit').html("");
-                            $('#success_message').addClass('alert alert-success');
+                            $('#modalJudul').html("");
                             $('#formSiswa').find('input').val('');
-                            $('#success_message').text(response.message);
+                            toastr.success(response.message);
 
                             $('#tambahModal').modal('hide');
 
@@ -356,13 +459,12 @@
                 } 
                 else if (response.status == 404)
                 {
-                    alert(response.message);
+                    toastr.success(response.message);
                 }
                 else if(response.status == 200)
                 {
                     $('#modalJudulEdit').html("");
-                    $('#success_message').addClass('alert alert-success');
-                    $('#success_message').text(response.message);
+                    toastr.success(response.message);
 
                     $('#editModal').modal('hide');
                 }
@@ -391,12 +493,11 @@
                     oTable.fnDraw(false); //reset datatable
                     if(response.status == 404)
                     {
-                        alert(response.message);
+                        toastr.success(response.message);
                     }
                     else if(response.status == 200)
                     {
-                        $('#success_message').addClass('alert alert-success');
-                        $('#success_message').text(response.message);
+                        toastr.success(response.message);
                     }
                 });
             }

@@ -7,17 +7,18 @@
             <div id="success_message"></div>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Data Guru SMK Ti Tunas Harapan</h5>
+                    <h5 class="card-title">Daftar Kelas SMK Ti Tunas Harapan</h5>
                     <button type="button" id="btn_tambah" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
                     <a href="#" class="btn btn-success mb-5">Export Excel</a>
                     <a href="#" class="btn btn-danger mb-5">Export PDF</a>
-                    <table id="table-guru" class="display" style="width:100%">
+                    <button type="button" id="importkelas" class="btn btn-success mb-5" data-bs-toggle="modal" data-bs-target="#importModal">Import Data kelas</button>
+                    <table id="table-kelas" class="display" style="width:100%">
                         <thead>
                             <tr>
-                                <th>NIGN</th>
-                                <th>Nama Guru</th>
-                                <th>Jenis Kelamin</th>
-                                <th>No. Telepon</th>
+                                <th>Kode</th>
+                                <th>Nama Kelas</th>
+                                <th>Wali Kelas</th>
+                                <th>Jurusan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -28,62 +29,74 @@
     </div>
 </div>
 
-<!-- Modal Tambah Guru -->
-<div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Modal View Siswa -->
+<div class="modal fade bd-example-modal-lg view-siswa" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-judul">Tambah Data Guru</h5>
+                <h5 class="modal-title" id="judul-siswa">Lihat Data Siswa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formGuru" class="form-horizontal" enctype="multipart/form-data">
+            <div class="modal-body">
+                <input type="hidden" name="id" id="id">
+                <table class="table table-bordered table-striped table-hover" width="100%">
+                    <thead>
+                    <tr>
+                        <th>NISN</th>
+                        <th>Nama Siswa</th>
+                        <th>Jenis Kelamin</th>
+                    </tr>
+                    </thead>
+                    <tbody id="data-siswa">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-block" id="btn-simpan" value="create">Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal View Siswa -->
+
+<!-- Modal Tambah kelas -->
+<div class="modal fade bd-example-modal-lg" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-judul">Tambah Kelas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formkelas" class="form-horizontal" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="id" id="id">
-                    <input type="hidden" name="user_id" id="user_id">
                     <ul id="save_errorList"></ul>
                     <div class="row g-3">
-                        <div class="mb-3 col-sm-6">
-                            <label for="nama_depan" class="form-label">NIGN</label>
-                            <input type="text" name="nign" class="nign form-control" required>
+                        <div class="mb-3">
+                            <label class="form-label">Nama kelas</label>
+                            <input type="text" name="nama_kelas" class="form-control" required>
                         </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="nama_depan" class="form-label">Nama Guru</label>
-                            <input type="text" name="nama_guru" class="nama_guru form-control" required>
-                        </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="nama_depan" class="form-label">Tempat Lahir</label>
-                            <input type="text" name="tempat_lahir" class="form-control" required>
-                        </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="nama_depan" class="form-label">Tanggal Lahir</label>
-                            <input type="text" name="tanggal_lahir" class="form-control"required>
-                        </div>
-                        <div class="form-floating col-sm-6">
+                        <div class="form-floating col-md-6">
                             <fieldset class="form-group">
-                                <label class="form-label">Jenis Kelamin</label>
-                                <select class="form-control" name="jenis_kelamin" id="selectJk" tabindex="-1" style="display: none; width: 100%" required>
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="L">Laki-Laki</option>
-                                    <option value="P">Perempuan</option>
+                                <select class="js-states form-control" name="guru_id" id="optionGuru" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Guru --</option>
+                                    @foreach ($guru as $gr)
+                                    <option value="{{ $gr->id }}">{{ $gr->nama_guru }}</option>
+                                    @endforeach
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="mb-3 col-sm-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" class="email form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Nomor Telepon</label>
-                            <input type="text" name="telepon" class="telepon form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Alamat</label>
-                            <textarea class="alamat form-control" name="alamat" aria-label="With textarea" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Avatar</label>
-                            <input type="file" name="avatar" class="form-control">
+                        <div class="form-floating col-md-6">
+                            <fieldset class="form-group">
+                                <select class="js-states form-control" name="jurusan_id" id="optionJurusan" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $jr)
+                                    <option value="{{ $jr->id }}">{{ $jr->nama_jurusan }}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
                         </div>
                     </div>
                 </div>
@@ -95,60 +108,45 @@
         </div>
     </div>
 </div>
-<!-- End Modal Tambah Guru -->
+<!-- End Modal Tambah kelas -->
 
-<!-- Modal Edit Guru -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Modal Edit kelas -->
+<div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-judul">Edit Data Guru</h5>
+                <h5 class="modal-title" id="modal-judul">Edit Kelas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formEdit" name="formEdit" class="form-horizontal" enctype="multipart/form-data">
+            <form id="formEdit" name="formEdit" class="form-horizontal">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <ul class="alert alert-warning d-none" id="modalJudulEdit"></ul>
                     <div class="row g-3">
-                        <div class="mb-3 col-sm-6">
-                            <label for="nign" class="form-label">NIGN</label>
-                            <input type="text" id="nign" name="nign" class=" form-control" value="" required>
+                        <div class="mb-3">
+                            <label class="form-label">Nama kelas</label>
+                            <input type="text" name="nama_kelas" id="nama_kelas" class="form-control" required>
                         </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="nama_guru" class="form-label">Nama Guru</label>
-                            <input type="text" id="nama_guru" name="nama_guru" class=" form-control" value="" required>
-                        </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
-                            <input type="text" id="tempat_lahir" name="tempat_lahir" class="form-control" value="" required>
-                        </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                            <input type="text" id="tanggal_lahir" name="tanggal_lahir" class="form-control" value="" required>
-                        </div>
-                        <div class="form-floating col-sm-6">
+                        <div class="form-floating col-md-6">
                             <fieldset class="form-group">
-                                <label class="form-label">Jenis Kelamin</label>
-                                <select class="js-states form-control" name="jenis_kelamin" id="jenis_kelamin" tabindex="-1" style="display: none; width: 100%">
-                                    <optgroup label="Pilih Jenis Kelamin">
-                                        <option value="L">Laki-Laki</option>
-                                        <option value="P">Perempuan</option>
-                                    </optgroup>
+                                <select class="js-states form-control" name="guru_id" id="guru_id" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Guru --</option>
+                                    @foreach ($guru as $gr)
+                                    <option value="{{ $gr->id }}">{{ $gr->nama_guru }}</option>
+                                    @endforeach
                                 </select>
                             </fieldset>
                         </div>
-                        <div class="mb-3 col-sm-6">
-                            <label for="exampleInputPassword1" class="form-label">Nomor Telepon</label>
-                            <input type="text" name="telepon" class="form-control" id="telepon" value="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat" id="alamat" aria-label="With textarea" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Avatar</label>
-                            <input type="file" name="avatar" class="form-control">
+                        <div class="form-floating col-md-6">
+                            <fieldset class="form-group">
+                                <select class="js-states form-control" name="jurusan_id" id="jurusan_id" tabindex="-1" style="display: none; width: 100%">
+                                    <option selected disabled>-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $jr)
+                                    <option value="{{ $jr->id }}">{{ $jr->nama_jurusan }}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
                         </div>
                     </div>
                 </div>
@@ -160,6 +158,7 @@
         </div>
     </div>
 </div>
+<!-- End Modal Edit kelas -->
 
 <!-- Modal Konfirmasi Delete -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modalHapus" data-backdrop="false">
@@ -169,8 +168,8 @@
                 <h5 class="modal-title">PERHATIAN</h5>
             </div>
             <div class="modal-body">
-                <p><b>Jika menghapus Guru maka</b></p>
-                <p>*data guru tersebut hilang selamanya, apakah anda yakin?</p>
+                <p><b>Jika menghapus kelas maka</b></p>
+                <p>*data kelas tersebut hilang selamanya, apakah anda yakin?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -193,31 +192,31 @@
         });
     });
 
-    //MULAI DATATABLE
-    //script untuk memanggil data json dari server dan menampilkannya berupa datatable
+    // Load Datatable
+    // script untuk memanggil data json dari server dan menampilkannya berupa datatable
     $(document).ready(function() {
-        $('#table-guru').DataTable({
+        $('#table-kelas').DataTable({
             processing: true,
             serverSide: true, //aktifkan server-side 
             ajax: {
-                url: "/guru",
+                url: "/kelas",
                 type: 'GET'
             },
             columns: [{
-                    data: 'nign',
-                    name: 'nign'
+                    data: 'kode_kelas',
+                    name: 'kode_kelas'
                 },
                 {
-                    data: 'nama_guru',
-                    name: 'nama_guru'
+                    data: 'nama_kelas',
+                    name: 'nama_kelas'
                 },
                 {
-                    data: 'jenis_kelamin',
-                    name: 'jenis_kelamin'
+                    data: 'guru',
+                    name: 'guru'
                 },
                 {
-                    data: 'telepon',
-                    name: 'telepon'
+                    data: 'jurusan',
+                    name: 'jurusan'
                 },
                 {
                     data: 'aksi',
@@ -230,27 +229,64 @@
         });
     });
 
+    // Fungsi Untuk Memanggil Modal Tambah
     $('#btn_tambah').click(function() {
-        $('#btn-simpan').val("tambah-guru");
-        $('#guru_id').val('');
-        $('#formGuru').trigger("reset");
-        $('#modal-judul').html("Tambah Guru");
+        $('#btn-simpan').val("tambah-kelas");
+        $('#guru_id').val();
+        $('#formkelas').trigger("reset");
+        $('#modal-judul').html("Tambah kelas");
         $('#tambahModal').modal('show');
-        $('#selectJk').select2({
+        $('#optionGuru').select2({
+            dropdownParent: $('#tambahModal')
+        });
+        $('#optionJurusan').select2({
             dropdownParent: $('#tambahModal')
         });
     });
 
-    $(document).on('click', '.edit-guru', function(e) {
+    // Fungsi untuk memanggil modal view siswa/Menampilkan Data Siswa Berdasarkan
+    // Id kelas yang dimiliki oleh siswa
+    $(document).on('click', '.view-siswa', function () {
+        var parent = $(this).data('id');
+        $('#viewModal').modal('show');
+        $.ajax({
+            type:"GET",
+            data:"id="+parent,
+            dataType:"JSON",
+            url:"/kelas/view",
+            success: function(response) {
+                // console.log(response);
+                var siswa = "";
+                if(response){
+                    $.each(response,function(index, val){
+                    $("#judul-siswa").text('View Data Siswa ' + val.kelas);
+                    siswa += "<tr>";
+                        siswa += "<td>"+val.nisn+"</td>";
+                        siswa += "<td>"+val.nama_depan+"</td>";
+                        siswa += "<td>"+val.jenis_kelamin+"</td>";
+                    siswa+="</tr>";
+                    });
+                    $("#data-siswa").html(siswa);
+                }
+            }
+        });
+        
+    });
+
+    // Fungsi untuk memanggil modal edit dan memunculkan data berdasarkan id kelas
+    $(document).on('click', '.edit-kelas', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
         $('#editModal').modal('show');
-        $('#jenis_kelamin').select2({
+        $('#guru_id').select2({
+            dropdownParent: $('#editModal')
+        });
+        $('#jurusan_id').select2({
             dropdownParent: $('#editModal')
         });
         $.ajax({
             type: "GET",
-            url: "/guru/edit/" + id,
+            url: "/kelas/edit/" + id,
             success: function(response) {
                 console.log(response);
                 if (response.status == 404) {
@@ -259,14 +295,10 @@
                     $('#editModal').modal('hide');
                 } else {
                     $('#id').val(id);
-                    $('#nign').val(response.nign);
-                    $('#nama_guru').val(response.nama_guru);
-                    $('#tempat_lahir').val(response.tempat_lahir);
-                    $('#tanggal_lahir').val(response.tanggal_lahir);
-                    $('#jenis_kelamin').val(response.jenis_kelamin);
-                    $('#telepon').val(response.telepon);
-                    $('#alamat').val(response.alamat);
-                    $('#avatar').val();
+                    $('#kode_kelas').val(response.kode_kelas);
+                    $('#nama_kelas').val(response.nama_kelas);
+                    $('#guru_id').val(response.guru_id);
+                    $('#jurusan_id').val(response.jurusan_id);
                 }
             }
         });
@@ -275,22 +307,22 @@
     });
 
     //SIMPAN & UPDATE DATA DAN VALIDASI (SISI CLIENT)
-    //jika id = formguru panjangnya lebih dari 0 atau bisa dibilang terdapat data dalam form tersebut maka
+    //jika id = formkelas panjangnya lebih dari 0 atau bisa dibilang terdapat data dalam form tersebut maka
     //jalankan jquery validator terhadap setiap inputan dll dan eksekusi script ajax untuk simpan data
-    if ($("#formGuru").length > 0) {
-        $("#formGuru").validate({
+    if ($("#formkelas").length > 0) {
+        $("#formkelas").validate({
             submitHandler: function(form) {
                 var actionType = $('#btn-simpan').val();
                 // Mengubah data menjadi objek agar file image bisa diinput kedalam database
-                var formData = new FormData($('#formGuru')[0]);
+                var formData = new FormData($('#formkelas')[0]);
                 $.ajax({
                     data: formData, //function yang dipakai agar value pada form-control seperti input, textarea, select dll dapat digunakan pada URL query string ketika melakukan ajax request
-                    url: "/guru/store", //url simpan data
+                    url: "/kelas/store", //url simpan data
                     type: "POST", //data tipe kita kirim berupa JSON
                     contentType: false,
                     processData: false,
                     success: function(response) {
-                        var oTable = $('#table-guru').dataTable(); //inialisasi datatable
+                        var oTable = $('#table-kelas').dataTable(); //inialisasi datatable
                         oTable.fnDraw(false); //reset datatable
                         if (response.status == 400) {
                             $('#save_errorList').html("");
@@ -304,8 +336,8 @@
                         } 
                         else if(response.status == 200)
                         {
-                            $('#modalJudulEdit').html("");
-                            $('#formGuru').find('input').val('');
+                            $('#modalJudul').html("");
+                            $('#formkelas').find('input').val('');
                             toastr.success(response.message);
 
                             $('#tambahModal').modal('hide');
@@ -317,6 +349,7 @@
         })
     }
 
+    // Fungsi untuk menyimpan data setelah melakukan edit data
     $(document).on('submit', '#formEdit', function(e) {
         e.preventDefault();
         var id = $('#id').val();
@@ -326,13 +359,13 @@
 
         $.ajax({
             type: "POST",
-            url: "/guru/update/" + id,
+            url: "/kelas/update/" + id,
             data: EditFormData,
             contentType: false,
             processData: false,
             success: function(response) {
                 console.log(response);
-                var oTable = $('#table-guru').dataTable(); //inialisasi datatable
+                var oTable = $('#table-kelas').dataTable(); //inialisasi datatable
                 oTable.fnDraw(false); //reset datatable
                 if (response.status == 400) {
                     $('#modalJudulEdit').html("");
@@ -346,7 +379,7 @@
                 } 
                 else if (response.status == 404)
                 {
-                    alert(response.message);
+                    toastr.success(response.message);
                 }
                 else if(response.status == 200)
                 {
@@ -368,7 +401,7 @@
     //jika tombol hapus pada modal konfirmasi di klik maka
     $('#btn-hapus').click(function() {
         $.ajax({
-            url: "/guru/delete/" + id, //eksekusi ajax ke url ini
+            url: "/kelas/delete/" + id, //eksekusi ajax ke url ini
             type: 'delete',
             beforeSend: function() {
                 $('#btn-hapus').text('Hapus Data...'); //set text untuk tombol hapus
@@ -376,11 +409,11 @@
             success: function(response) { //jika sukses
                 setTimeout(function() {
                     $('#modalHapus').modal('hide');
-                    var oTable = $('#table-guru').dataTable();
+                    var oTable = $('#table-kelas').dataTable();
                     oTable.fnDraw(false); //reset datatable
                     if(response.status == 404)
                     {
-                        alert(response.message);
+                        toastr.success(response.message);
                     }
                     else if(response.status == 200)
                     {
@@ -390,6 +423,5 @@
             }
         })
     });
-
 </script>
 @endsection

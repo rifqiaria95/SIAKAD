@@ -12,7 +12,8 @@ class Mapel extends Model
     protected $fillable = [
         'kode',
         'nama',
-        'semester'
+        'semester',
+        'guru_id'
     ];
 
     public function siswa()
