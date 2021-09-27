@@ -135,17 +135,17 @@ class KelasController extends Controller
     public function view(Request $request)
     {
         $siswa = Siswa::OrderBy('nama_depan', 'asc')->where('kelas_id', $request->id)->get();
-        // dd($siswa);
+
         foreach ($siswa as $val) {
-            $newForm = array([
+            $newForm[] = array(
                 'kelas' => $val->kelas->nama_kelas,
                 'nisn' => $val->nisn,
                 'nama_depan' => $val->nama_depan,
                 'jenis_kelamin' => $val->jenis_kelamin,
-            ]);
+            );
         }
 
-        return response()->json($siswa);
+        return response()->json($newForm);
     }
 
 }

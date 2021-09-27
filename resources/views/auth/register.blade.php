@@ -41,13 +41,28 @@
                             {!! Form::open(['url' => '/postregister']) !!}
                                 @csrf
                                 <div class="mb-3">
+                                    {!! Form::number('nisn', '', ['class' => 'form-control', 'placeholder' => 'NISN']) !!}
+                                </div>
+                                <div class="mb-3">
                                     {!! Form::text('nama_depan', '', ['class' => 'form-control', 'placeholder' => 'Nama Depan']) !!}
                                 </div>
                                 <div class="mb-3">
                                     {!! Form::text('nama_belakang', '', ['class' => 'form-control', 'placeholder' => 'Nama Belakang']) !!}
                                 </div>
+                                <div class="mb-3">
+                                    {!! Form::text('tempat_lahir', '', ['class' => 'form-control', 'placeholder' => 'Tempat Lahir']) !!}
+                                </div>
+                                <div class="mb-3">
+                                    {!! Form::text('tanggal_lahir', '', ['class' => 'form-control', 'placeholder' => 'Tanggal Lahir']) !!}
+                                </div>
                                 <div class="form-select mb-3" aria-label="Default select example">
                                     {!!Form::select('jenis_kelamin', ['' => 'Pilih Jenis Kelamin', 'L' => 'Laki-Laki', 'P' => 'Perempuan'], ['style' => 'display:none;'])!!}
+                                </div>
+                                <div class="mb-3">
+                                    {!! Form::text('nama_ibu', '', ['class' => 'form-control', 'placeholder' => 'Nama Ibu']) !!}
+                                </div>
+                                <div class="mb-3">
+                                    {!! Form::text('nama_ayah', '', ['class' => 'form-control', 'placeholder' => 'Nama Ayah']) !!}
                                 </div>
                                 <div class="mb-3">
                                     {!! Form::text('agama', '', ['class' => 'form-control', 'placeholder' => 'Agama']) !!}

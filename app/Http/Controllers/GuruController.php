@@ -51,7 +51,7 @@ class GuruController extends Controller
         else {
              // Insert Table User
              $user = new User;
-             $user->role = 'Guru';
+             $user->role = 'guru';
              $user->name = $request->nama_guru;
              $user->email = $request->email;
              $user->email_verified_at = now();

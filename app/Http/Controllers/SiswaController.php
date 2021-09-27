@@ -28,7 +28,7 @@ class SiswaController extends Controller
         if ($request->ajax()) {
             return datatables()->of($siswa)
                 ->addColumn('kelas', function(Siswa $siswa) {
-                    return $siswa->kelas->nama_kelas;
+                    return '<span class="badge rounded-pill bg-primary">'. $siswa->kelas->nama_kelas .'</span>';
                 })
                 ->addColumn('jurusan', function(Siswa $siswa) {
                     return $siswa->jurusan->nama_jurusan;
@@ -70,7 +70,7 @@ class SiswaController extends Controller
         else {
             // Insert Table User
             $user = new User;
-            $user->role = 'Siswa';
+            $user->role = 'siswa';
             $user->name = $request->nama_depan;
             $user->email = $request->email;
             $user->email_verified_at = now();

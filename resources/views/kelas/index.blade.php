@@ -30,7 +30,7 @@
 </div>
 
 <!-- Modal View Siswa -->
-<div class="modal fade bd-example-modal-lg view-siswa" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg view-siswa" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -38,22 +38,26 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="id" id="id">
-                <table class="table table-bordered table-striped table-hover" width="100%">
-                    <thead>
-                    <tr>
-                        <th>NISN</th>
-                        <th>Nama Siswa</th>
-                        <th>Jenis Kelamin</th>
-                    </tr>
-                    </thead>
-                    <tbody id="data-siswa">
-                    </tbody>
-                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-body">
+                        <table class="table table-bordered table-striped table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th>NISN</th>
+                                <th>Nama Siswa</th>
+                                <th>Jenis Kelamin</th>
+                            </tr>
+                            </thead>
+                            <tbody id="data-siswa">
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btn-block" id="btn-simpan" value="create">Simpan
-                </button>
+                <a href="#" class="btn btn-danger mb-5">Export Siswa</a>
             </div>
         </div>
     </div>
@@ -62,7 +66,7 @@
 
 <!-- Modal Tambah kelas -->
 <div class="modal fade bd-example-modal-lg" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-judul">Tambah Kelas</h5>
@@ -246,20 +250,20 @@
 
     // Fungsi untuk memanggil modal view siswa/Menampilkan Data Siswa Berdasarkan
     // Id kelas yang dimiliki oleh siswa
-    $(document).on('click', '.view-siswa', function () {
+    $(document).on('click', '.view-siswa', function (e) {
+        e.preventDefault();
         var parent = $(this).data('id');
         $('#viewModal').modal('show');
         $.ajax({
             type:"GET",
-            data:"id="+parent,
-            dataType:"JSON",
+            data:"id=" + parent,
             url:"/kelas/view",
             success: function(response) {
                 // console.log(response);
                 var siswa = "";
                 if(response){
                     $.each(response,function(index, val){
-                    $("#judul-siswa").text('View Data Siswa ' + val.kelas);
+                    $('#judul-siswa').text('Lihat Data Siswa ' + val.kelas);
                     siswa += "<tr>";
                         siswa += "<td>"+val.nisn+"</td>";
                         siswa += "<td>"+val.nama_depan+"</td>";

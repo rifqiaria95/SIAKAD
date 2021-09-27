@@ -26,7 +26,7 @@ Route::post('/postregister', 'SiteController@postregister');
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth', 'checkRole:Admin']], function () {
+Route::group(['middleware' => ['auth', 'checkRole:admin, guru']], function () {
     // Route Siswa
     Route::get('siswa', 'SiswaController@index');
     Route::post('siswa/store', 'SiswaController@store');
@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth', 'checkRole:Admin']], function () {
     ]);
 });
 
-Route::group(['middleware' => ['auth', 'checkRole:Admin, Siswa, Guru']], function () {
+Route::group(['middleware' => ['auth', 'checkRole:admin, siswa, guru']], function () {
 
     Route::get('dashboard', 'DashboardController@index')->name('dashboard');
 });

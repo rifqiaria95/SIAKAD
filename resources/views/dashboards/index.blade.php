@@ -3,7 +3,7 @@
 
 <div class="main-wrapper">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card stats-card">
                 <div class="card-body">
                     <div class="stats-info">
@@ -14,9 +14,9 @@
                     <i class="material-icons">face</i>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="card stats-card">
                 <div class="card-body">
                     <div class="stats-info">
@@ -27,20 +27,33 @@
                     <i class="material-icons">supervised_user_circle</i>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <div class="stats-info">
+                    <h5 class="card-title">Total Kelas<span class="material-icons-outlined"></span></h5>
+                    <p class="stats-text">{{ totalKelas() }}</p>
+                    </div>
+                    <div class="stats-icon change-success">
+                    <i class="material-icons">class</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="card stats-card">
                 <div class="card-body">
                     <div class="stats-info">
                     <h5 class="card-title">Total Mapel<span class="material-icons-outlined"></span></h5>
                     <p class="stats-text">{{ totalMapel() }}</p>
                     </div>
-                    <div class="stats-icon change-success">
+                    <div class="stats-icon change-danger">
                     <i class="material-icons">library_books</i>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
     </div>
     <div class="row">

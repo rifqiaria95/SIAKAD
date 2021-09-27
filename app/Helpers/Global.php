@@ -1,8 +1,9 @@
 <?php
 
-use App\Models\Siswa;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Mapel;
+use App\Models\Siswa;
 
 function ranking5Besar()
 {
@@ -18,6 +19,11 @@ function ranking5Besar()
 function totalSiswa()
 {
     return Siswa::count();
+}
+
+function totalKelas()
+{
+    return Kelas::count();
 }
 
 function totalGuru()

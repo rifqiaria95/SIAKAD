@@ -6,7 +6,7 @@
                 <li class="{{ Request::is('dashboard')?'active-page open':'' }}">
                     <a href="/dashboard" class="dashboard"><i data-feather="activity"></i>Dashboard</a>
                 </li>
-                @if(auth()->user()->role == 'Admin')
+                @if(auth()->user()->role == 'admin')
                 <li class="{{ Request::is('user')?'active-page open':'' }}">
                   <a href="#"><i data-feather="user"></i>User<i class="fas fa-chevron-right dropdown-icon"></i></a>
                   <ul class="">
@@ -14,7 +14,7 @@
                   </ul>
                 </li>
                 <li class="{{ Request::is('siswa', 'guru', 'mapel', 'kelas', 'jurusan')?'active-page open':'' }}">
-                  <a href="#"><i data-feather="box"></i>Data<i class="fas fa-chevron-right dropdown-icon"></i></a>
+                  <a href="#"><i data-feather="box"></i>Master Data<i class="fas fa-chevron-right dropdown-icon"></i></a>
                   <ul class="">
                     <li ><a href="/siswa" class="{{ Request::is('siswa')?'active':'' }}"><i class="far fa-circle"></i>Siswa</a></li>
                     <li ><a href="/guru" class="{{ Request::is('guru')?'active':'' }}"><i class="far fa-circle"></i>Guru</a></li>
