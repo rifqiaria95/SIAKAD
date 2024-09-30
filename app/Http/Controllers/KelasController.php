@@ -60,14 +60,14 @@ class KelasController extends Controller
         else {
             // dd($request->all());
             $nama_kelas = $request->nama_kelas;
-            $guru_id = $request->guru_id;
+            $guru_id    = $request->guru_id;
             $jurusan_id = $request->jurusan_id;
 
-            $generator = Helper::IDGenerator(new Kelas, 'kode_kelas', 4, 'TP');
-            $kelas = new Kelas;
+            $generator         = Helper::IDGenerator(new Kelas, 'kode_kelas', 4, 'TP');
+            $kelas             = new Kelas;
             $kelas->kode_kelas = $generator;
             $kelas->nama_kelas = $nama_kelas;
-            $kelas->guru_id = $guru_id;
+            $kelas->guru_id    = $guru_id;
             $kelas->jurusan_id = $jurusan_id;
             $kelas->save();
             
@@ -99,9 +99,9 @@ class KelasController extends Controller
         }
         else {
             // dd($request->all());
-            $kelas = Kelas::find($id);
+            $kelas             = Kelas::find($id);
             $kelas->nama_kelas = $request->nama_kelas;
-            $kelas->guru_id = $request->guru_id;
+            $kelas->guru_id    = $request->guru_id;
             $kelas->jurusan_id = $request->jurusan_id;
             $kelas->save();
             
